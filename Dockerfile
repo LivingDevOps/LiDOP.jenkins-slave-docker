@@ -1,20 +1,40 @@
-FROM jenkins/ssh-slave
-USER root
-RUN apt-get update && \
-    apt-get install -y \
-        apt-transport-https \
-        ca-certificates \
-        curl \
-        software-properties-common 
+FROM docker:18.09.0-dind
 
-RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
-    add-apt-repository \
-    "deb [arch=amd64] https://download.docker.com/linux/debian \
-    $(lsb_release -cs) \
-    stable"
+ARG user=jenkins
+ARG group=jenkins
+ARG uid=1000
+ARG gid=1000
+ARG JENKINS_AGENT_HOME=/home/${user}
 
-RUN apt-get update && \
-    apt-get install -y docker-ce
+ENV JENKINS_AGENT_HOME ${JENKINS_AGENT_HOME}
 
-RUN curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose && \
-    chmod +x /usr/local/bin/docker-compose
+RUN addgroup -g ${gid} ${group} \
+	&& adduser -D -h "${JENKINS_AGENT_HOME}" -u "${uid}" -G "${group}" -s /bin/bash "${user}" \
+	&& passwd -u jenkins
+
+# setup SSH server
+RUN apk update \
+    && apk add --no-cache sudo bash openssh openjdk8 git subversion curl wget 
+RUN sed -i /etc/ssh/sshd_config \
+        -e 's/#PermitRootLogin.*/PermitRootLogin no/' \
+        -e 's/#RSAAuthentication.*/RSAAuthentication yes/'  \
+        -e 's/#PasswordAuthentication.*/PasswordAuthentication no/' \
+        -e 's/#SyslogFacility.*/SyslogFacility AUTH/' \
+        -e 's/#LogLevel.*/LogLevel INFO/' \
+    && mkdir /var/run/sshd \
+    && echo "%${group} ALL=(ALL) NOPASSWD: /usr/local/bin/docker" >> /etc/sudoers  
+
+#Update credential for Jenkins user
+RUN delgroup ping \
+    && addgroup -g 999 docker \
+    && addgroup jenkins docker \
+    && ln -s /usr/local/bin/docker /usr/bin/docker 
+
+VOLUME "${JENKINS_AGENT_HOME}" "/tmp" "/run" "/var/run"
+WORKDIR "${JENKINS_AGENT_HOME}"
+
+COPY entrypoint.sh /usr/local/bin/
+
+EXPOSE 22
+
+ENTRYPOINT ["bash", "entrypoint.sh"]
