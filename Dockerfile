@@ -14,7 +14,7 @@ RUN addgroup -g ${gid} ${group} \
 
 # setup SSH server
 RUN apk update \
-    && apk add --no-cache sudo bash openssh openjdk8 git subversion curl wget 
+    && apk add --no-cache sudo bash openssh openjdk8 git subversion curl wget python ansible
 RUN sed -i /etc/ssh/sshd_config \
         -e 's/#PermitRootLogin.*/PermitRootLogin no/' \
         -e 's/#RSAAuthentication.*/RSAAuthentication yes/'  \
