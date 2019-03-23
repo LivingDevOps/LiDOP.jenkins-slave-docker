@@ -6,8 +6,9 @@ pool:
   vmImage: 'Ubuntu-16.04'
 
 variables:
-  group: 'DockerHub'
-  imageName: 'livingdevops/lidop.ssh-slave-docker:latest'
+  - group: 'DockerHub'
+  - name: imageName 
+    value: 'livingdevops/lidop.ssh-slave-docker:latest'
 
 steps:
 - script: docker build -f Dockerfile -t $(imageName) .
