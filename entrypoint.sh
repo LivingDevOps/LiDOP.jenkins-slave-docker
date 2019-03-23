@@ -1,6 +1,33 @@
-!/bin/bash
+#!/bin/bash
 
 set -ex
+
+# The MIT License
+#
+#  Copyright (c) 2015, CloudBees, Inc.
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in
+#  all copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+#  THE SOFTWARE.
+
+# Usage:
+#  docker run jenkinsci/ssh-slave <public key>
+# or
+#  docker run -e "JENKINS_SLAVE_SSH_PUBKEY=<public key>" jenkinsci/ssh-slave
 
 write_key() {
 	mkdir -p "${JENKINS_AGENT_HOME}/.ssh"
@@ -17,20 +44,13 @@ if [[ $# -gt 0 ]]; then
     write_key "$1"
     shift 1
   else
-    ssh-keygen -A
-    "$@" & #-E /var/log/sshd.log
+    exec "$@"
   fi
 fi
+
 
 # ensure variables passed to docker container are also exposed to ssh sessions
 env | grep _ >> /etc/environment
 
 ssh-keygen -A
-set -- /usr/sbin/sshd -e -D "${@}"
-
-#exec "${@}"
-"${@}" &
-
-exec "$(which dind)" dockerd \
-      --host=unix:///var/run/docker.sock \
-      --host=tcp://0.0.0.0:2375
+exec /usr/sbin/sshd -D -e "${@}"
