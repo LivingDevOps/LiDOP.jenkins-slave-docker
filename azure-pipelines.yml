@@ -7,14 +7,13 @@ pool:
 variables:
   - group: 'DockerHub'
   - name: 'imageName' 
-    value: 'livingdevops/$(dockerOrganisation)/$(Build.Repository.Name):$(Build.SourceBranchName)'
+    value: 'livingdevops/$(Build.Repository.Name):$(Build.SourceBranchName)'
 
 steps:
 - script: docker login -u $(user) -p $(password)
   displayName: 'docker login'
 
 - script: docker build -f Dockerfile -t $(imageName) .
-  enabled: false
   displayName: 'docker build'
 
 - script: docker push $(imageName)
