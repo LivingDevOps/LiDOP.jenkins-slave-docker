@@ -11,10 +11,7 @@ variables:
 
 steps:
 - script: |
-    export imageNameNew=$(echo "$(imageName)" | sed -e 's/master/latest/g')
-    echo "ImageName: $imageNameNew"
-    echo "##vso[task.setvariable variable=imageNameNew]$(echo "$(imageName)" | sed -e 's/master/latest/g')"
-    echo "ImageName: $(imageNameNew)"
+    echo "##vso[task.setvariable variable=imageNameNew]$(echo "$(imageName)" | sed -e 's/master/latest/g' | awk '{print tolower($0)}')"
   displayName: 'set variables'
 
 - script: docker login -u $(user) -p $(password)
