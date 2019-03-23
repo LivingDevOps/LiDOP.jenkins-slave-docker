@@ -1,4 +1,6 @@
-FROM jenkins/ssh-slave
+FROM jenkins/jnlp-slave
+
+USER root
 
 # setup ansible
 RUN echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu bionic main" >> /etc/apt/sources.list  && \
@@ -11,3 +13,5 @@ RUN echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu bionic main" >> /e
 RUN apt-get install -y python-pip \
     python-pexpect \
     git
+
+USER jenkins
