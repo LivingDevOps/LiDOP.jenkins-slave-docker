@@ -20,5 +20,5 @@ steps:
 - script: docker build -f Dockerfile -t $(imageNameNew) .
   displayName: 'docker build'
 
-- script: docker push $(imageName)
+- script: docker push $(imageNameNew)
   displayName: 'docker push'
