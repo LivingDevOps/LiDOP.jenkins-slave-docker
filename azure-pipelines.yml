@@ -1,4 +1,3 @@
-
 trigger:
 - master
 
@@ -7,13 +6,16 @@ pool:
 
 variables:
   - group: 'DockerHub'
-  - name: imageName 
-    value: 'livingdevops/lidop.ssh-slave-docker:latest'
+  - name: 'imageName' 
+    value: 'livingdevops/$(dockerOrganisation)/$(Build.Repository.Name):$(Build.SourceBranchName)'
 
 steps:
+- script: docker login -u $(user) -p $(password)
+  displayName: 'docker login'
+
 - script: docker build -f Dockerfile -t $(imageName) .
   enabled: false
   displayName: 'docker build'
 
-- script: docker login -u $(user) -p $(password)
-  displayName: 'docker build'
+- script: docker push $(imageName)
+  displayName: 'docker push'
