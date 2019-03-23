@@ -14,4 +14,4 @@ RUN apt-get install -y python-pip \
     python-pexpect \
     git
 
-USER jenkins
+# USER jenkins
