@@ -14,7 +14,7 @@ RUN apt-get install -y python-pip \
     python-pexpect \
     git
 
-RUN pip install docker-py && pip install docker
+RUN pip install docker && pip install docker-compose
 
 RUN git config --system http.sslVerify false
 
