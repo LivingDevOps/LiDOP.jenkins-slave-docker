@@ -43,8 +43,8 @@ RUN apt-get update && apt-get install -y software-properties-common && \
 VOLUME "${JENKINS_AGENT_HOME}" "/tmp" "/run" "/var/run"
 WORKDIR "${JENKINS_AGENT_HOME}"
 
-COPY setup-sshd /usr/local/bin/setup-sshd
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
 EXPOSE 22
 ENTRYPOINT ["/bin/bash"]
-CMD ["/usr/local/bin/setup-sshd"]
+CMD ["/usr/local/bin/entrypoint.sh"]
