@@ -13,6 +13,8 @@ steps:
 - script: |
     export imageName=$(echo "$(imageName)" | sed -e 's/master/latest/g')
     echo '##vso[task.setvariable variable=imageName]$(imageName)'
+    echo "ImageName: $(imageName)"
+  displayName: 'set variables'
 
 - script: docker login -u $(user) -p $(password)
   displayName: 'docker login'
