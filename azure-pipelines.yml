@@ -7,9 +7,13 @@ pool:
 variables:
   - group: 'DockerHub'
   - name: 'imageName' 
-    value: 'livingdevops/$(Build.Repository.Name):$(Build.SourceBranchName)'
+    value: '$(Build.Repository.Name):latest$(Build.SourceBranchName)'
 
 steps:
+- script: |
+    export imageName=$(echo "$(imageName)" | sed -e 's/master/latest/g')
+    echo '##vso[task.setvariable variable=imageName]$(imageName)'
+
 - script: docker login -u $(user) -p $(password)
   displayName: 'docker login'
 
