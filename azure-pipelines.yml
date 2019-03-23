@@ -12,7 +12,7 @@ variables:
 steps:
 - script: |
     export imageNameNew=$(echo "$(imageName)" | sed -e 's/master/latest/g')
-    echo '##vso[task.setvariable variable=imageNameNew]$(imageNameNew)'
+    echo "##vso[task.setvariable variable=imageNameNew]$imageNameNew"
     echo "ImageName: $(imageNameNew)"
   displayName: 'set variables'
 
