@@ -14,4 +14,6 @@ RUN apt-get install -y python-pip \
     python-pexpect \
     git
 
+RUN git config --system http.sslVerify false
+
 # USER jenkins
