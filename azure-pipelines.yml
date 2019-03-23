@@ -8,6 +8,8 @@ variables:
   - group: 'DockerHub'
   - name: 'imageName' 
     value: '$(Build.Repository.Name):latest$(Build.SourceBranchName)'
+  - name: 'imageNameNew' 
+    value: ''
 
 steps:
 - script: |
@@ -19,7 +21,7 @@ steps:
 - script: docker login -u $(user) -p $(password)
   displayName: 'docker login'
 
-- script: docker build -f Dockerfile -t $(imageName) .
+- script: docker build -f Dockerfile -t $(imageNameNew) .
   displayName: 'docker build'
 
 - script: docker push $(imageName)
