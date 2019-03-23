@@ -31,14 +31,18 @@ RUN apt-get update && apt-get install -y software-properties-common && \
     echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections && \
 	apt-get -y install oracle-java8-installer
 
-# setup tools
+# setup ansible
 RUN apt-get update && apt-get install -y software-properties-common && \
     apt-add-repository -y ppa:ansible/ansible && \
-	apt-get update && \
-	apt-get -y install ansible \
-    python-pip \
+    apt-get update && \
+    apt-get -y install ansible
+
+# setup tools
+RUN apt-get install -y python-pip \
     python-pexpect \
     git
+
+USER ${user}
  
 VOLUME "${JENKINS_AGENT_HOME}" "/tmp" "/run" "/var/run"
 WORKDIR "${JENKINS_AGENT_HOME}"
