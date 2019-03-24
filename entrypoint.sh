@@ -36,7 +36,10 @@
 if [ $# -eq 1 ]; then
     echo "Run command: $@"
 	# if `docker run` only has one arguments, we assume user is running alternate command like `bash` to inspect the image
-	exec "$@"
+	exec "$@" &
+    exec "$(which dind)" dockerd \
+      --host=unix:///var/run/docker.sock \
+      --host=tcp://0.0.0.0:2375
 
 else
 
