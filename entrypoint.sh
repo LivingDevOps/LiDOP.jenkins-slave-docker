@@ -39,6 +39,7 @@ if [ $# -eq 1 ]; then
 	exec "$@" &
     exec "$(which dind)" dockerd \
       --host=unix:///var/run/docker.sock \
+      --insecure-registry registry.service.lidop.local:5000
       --host=tcp://0.0.0.0:2375
 
 else
