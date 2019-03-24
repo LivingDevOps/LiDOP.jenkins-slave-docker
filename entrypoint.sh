@@ -2,6 +2,7 @@
 
 set -ex
 
+
 write_key() {
 	mkdir -p "${JENKINS_AGENT_HOME}/.ssh"
 	echo "$1" > "${JENKINS_AGENT_HOME}/.ssh/authorized_keys"
@@ -17,19 +18,16 @@ if [[ $# -gt 0 ]]; then
     write_key "$1"
     shift 1
   else
-    ssh-keygen -A
-    "$@" & #-E /var/log/sshd.log
+    exec "$@"
   fi
 fi
+
 
 # ensure variables passed to docker container are also exposed to ssh sessions
 env | grep _ >> /etc/environment
 
 ssh-keygen -A
-set -- /usr/sbin/sshd -e -D "${@}"
-
-#exec "${@}"
-"${@}" &
+exec /usr/sbin/sshd -D -e "${@}" &
 
 exec "$(which dind)" dockerd \
       --host=unix:///var/run/docker.sock \
