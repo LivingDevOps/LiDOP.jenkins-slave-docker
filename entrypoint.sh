@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 
-set -ex
+
+#!/usr/bin/env sh
+
 # The MIT License
 #
 #  Copyright (c) 2015, CloudBees, Inc.
@@ -108,4 +110,3 @@ else
       --host=tcp://0.0.0.0:2375     &
 	exec $JAVA_BIN $JAVA_OPTS $JNLP_PROTOCOL_OPTS -cp /usr/share/jenkins/slave.jar hudson.remoting.jnlp.Main -headless $TUNNEL $URL $WORKDIR $OPT_JENKINS_SECRET $OPT_JENKINS_AGENT_NAME "$@"
 fi
-
