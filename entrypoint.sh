@@ -106,6 +106,7 @@ else
 
     exec "$(which dind)" dockerd \
       --host=unix:///var/run/docker.sock \
+      --insecure-registry registry.service.lidop.local:5000
       --host=tcp://0.0.0.0:2375     &
 	exec $JAVA_BIN $JAVA_OPTS $JNLP_PROTOCOL_OPTS -cp /usr/share/jenkins/slave.jar hudson.remoting.jnlp.Main -headless $TUNNEL $URL $WORKDIR $OPT_JENKINS_SECRET $OPT_JENKINS_AGENT_NAME "$@"
 fi
