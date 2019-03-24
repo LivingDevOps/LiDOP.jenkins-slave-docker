@@ -34,7 +34,7 @@
 # * JENKINS_AGENT_WORKDIR : agent work directory, if not set by optional parameter -workDir
 
 if [ $# -eq 1 ]; then
-
+    echo "Run command: $@"
 	# if `docker run` only has one arguments, we assume user is running alternate command like `bash` to inspect the image
 	exec "$@"
 
@@ -98,10 +98,11 @@ else
 
 	#TODO: Handle the case when the command-line and Environment variable contain different values.
 	#It is fine it blows up for now since it should lead to an error anyway.
+    echo "Run default command"
 
-	exec $JAVA_BIN $JAVA_OPTS $JNLP_PROTOCOL_OPTS -cp /usr/share/jenkins/slave.jar hudson.remoting.jnlp.Main -headless $TUNNEL $URL $WORKDIR $OPT_JENKINS_SECRET $OPT_JENKINS_AGENT_NAME "$@" &
     exec "$(which dind)" dockerd \
       --host=unix:///var/run/docker.sock \
-      --host=tcp://0.0.0.0:2375     
+      --host=tcp://0.0.0.0:2375     &
+	exec $JAVA_BIN $JAVA_OPTS $JNLP_PROTOCOL_OPTS -cp /usr/share/jenkins/slave.jar hudson.remoting.jnlp.Main -headless $TUNNEL $URL $WORKDIR $OPT_JENKINS_SECRET $OPT_JENKINS_AGENT_NAME "$@"
 fi
 
