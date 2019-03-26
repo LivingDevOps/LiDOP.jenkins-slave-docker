@@ -1,6 +1,6 @@
 FROM docker:18.09.0-dind
 
-ARG VERSION=3.28
+ARG VERSION=3.9
 ARG user=jenkins
 ARG group=jenkins
 ARG uid=1000
@@ -12,7 +12,7 @@ RUN addgroup -g ${gid} ${group} \
 	&& passwd -u jenkins
 
 RUN apk update \
-    && apk add --no-cache sudo bash openssh openjdk8 git subversion curl wget python py2-pip ansible nss
+    && apk add --no-cache sudo bash openssh openjdk8 git subversion curl wget python py-pip ansible nss
 
 ARG AGENT_WORKDIR=/home/${user}/agent
 
@@ -28,15 +28,11 @@ VOLUME /home/${user}/.jenkins
 VOLUME ${AGENT_WORKDIR}
 WORKDIR /home/${user}
 
-
 USER root
-
-RUN pip2 install docker && pip2 install docker-compose
+RUN pip3 install --upgrade pip
+RUN pip3 install docker && pip3 install docker-compose
 
 RUN git config --system http.sslVerify false
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-
 ENTRYPOINT ["bash", "/usr/local/bin/entrypoint.sh"]
-
-#USER jenkins
