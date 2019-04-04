@@ -12,7 +12,7 @@ RUN addgroup -g ${gid} ${group} \
 	&& passwd -u jenkins
 
 RUN apk update \
-    && apk add --no-cache sudo bash openssh openjdk8 git subversion curl wget python py-pip ansible nss
+    && apk add --no-cache sudo bash openssh openjdk8 git subversion curl wget python py-pip ansible nss terraform
 
 ARG AGENT_WORKDIR=/home/${user}/agent
 
